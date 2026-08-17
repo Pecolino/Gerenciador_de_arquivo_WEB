@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Gerenciador de Arquivos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>📂 /{{ caminho_atual }}</h2>
+
+  {% with mensagens = get_flashed_messages() %}
+    {% if mensagens %}
+      {% for m in mensagens %}
+        <div class="flash">{{ m }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if caminho_pai is not none %}
+    <a class="voltar" href="{{ url_for('navegar', subcaminho=caminho_pai) }}">⬅️ Voltar</a>
+  {% endif %}
+
+  <ul>
+    {% for item in itens %}
+      <li>
+        {% if item.tipo == "📁" %}
+          <a href="{{ url_for('navegar', subcaminho=item.caminho) }}">{{ item.tipo }} {{ item.nome }}</a>
+        {% else %}
+          <a href="{{ url_for('baixar', subcaminho=item.caminho) }}">{{ item.tipo }} {{ item.nome }}</a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="upload">
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="arquivo" required>
+      <button type="submit">Enviar arquivo para esta pasta</button>
+    </form>
+  </div>
+</body>
+</html>
